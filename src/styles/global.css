@@ -1,0 +1,45 @@
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'nativewind/theme';
+
+:root {
+  --app-background: #09090b;
+  --app-surface: #18181b;
+  --app-surface-strong: #27272a;
+  --app-border-subtle: rgba(255, 255, 255, 0.1);
+  --app-content-primary: #fafafa;
+  --app-content-secondary: #d4d4d8;
+  --app-content-muted: #a1a1aa;
+  --app-content-subtle: #71717a;
+  --app-brand: #2dd4bf;
+  --app-brand-200: #99f6e4;
+  --app-brand-300: #5eead4;
+  --app-brand-soft: rgba(45, 212, 191, 0.14);
+  --app-brand-contrast: #ffffff;
+  --app-income: #34d399;
+  --app-income-soft: rgba(52, 211, 153, 0.14);
+  --app-expense: #fb7185;
+  --app-expense-soft: rgba(251, 113, 133, 0.14);
+}
+
+@theme inline {
+  --color-background: var(--app-background);
+  --color-surface: var(--app-surface);
+  --color-surface-strong: var(--app-surface-strong);
+  --color-border-subtle: var(--app-border-subtle);
+  --color-content-primary: var(--app-content-primary);
+  --color-content-secondary: var(--app-content-secondary);
+  --color-content-muted: var(--app-content-muted);
+  --color-content-subtle: var(--app-content-subtle);
+  --color-brand: var(--app-brand);
+  --color-brand-200: var(--app-brand-200);
+  --color-brand-300: var(--app-brand-300);
+  --color-brand-soft: var(--app-brand-soft);
+  --color-brand-contrast: var(--app-brand-contrast);
+  --color-income: var(--app-income);
+  --color-income-soft: var(--app-income-soft);
+  --color-expense: var(--app-expense);
+  --color-expense-soft: var(--app-expense-soft);
+}
+
+@import 'tailwindcss/preflight.css' layer(base);
+@import 'tailwindcss/utilities.css';

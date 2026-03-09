@@ -1,39 +1,65 @@
 {
   "expo": {
-    "name": "finasp",
+    "name": "Finasp",
     "slug": "finasp",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
     "scheme": "finasp",
-    "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+    "version": "1.0.0",
+    "runtimeVersion": {
+      "policy": "appVersion"
     },
+    "web": {
+      "favicon": "./assets/logo-sem-bg.png"
+    },
+    "experiments": {
+      "tsconfigPaths": true
+    },
+    "plugins": [
+      "expo-sqlite",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permita que o Finasp acesse suas fotos para escolher uma imagem de perfil."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "sounds": ["./assets/notification.mp3"]
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#09090b",
+          "image": "./assets/logo-sem-bg.png",
+          "imageWidth": 220,
+          "resizeMode": "contain"
+        }
+      ],
+      "expo-audio",
+      "expo-asset"
+    ],
+    "orientation": "portrait",
+    "icon": "./assets/logo-sem-bg.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/logo-sem-bg.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#09090b"
+    },
+    "assetBundlePatterns": ["**/*"],
     "ios": {
+      "bundleIdentifier": "com.finasp.app",
+      "buildNumber": "1",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.finasp.app",
+      "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
-      },
-      "predictiveBackGestureEnabled": false
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": [
-      "expo-router"
-    ],
-    "experiments": {
-      "typedRoutes": true
+        "foregroundImage": "./assets/logo-sem-bg.png",
+        "backgroundColor": "#09090b"
+      }
     }
   }
 }
