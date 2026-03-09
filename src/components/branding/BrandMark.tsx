@@ -6,16 +6,22 @@ import { Image, View } from '../ui/NativePrimitives';
 type BrandMarkProps = {
   className?: string;
   imageClassName?: string;
+  source?: 'logo' | 'splash';
 };
 
-export function BrandMark({ className, imageClassName }: BrandMarkProps) {
+const brandMarkSources = {
+  logo: require('../../../assets/logo.png'),
+  splash: require('../../../assets/splash.png'),
+} as const;
+
+export function BrandMark({ className, imageClassName, source = 'logo' }: BrandMarkProps) {
   return (
     <View className={cn('self-start', className)}>
       <Image
         accessibilityLabel="Logo Finasp"
         className={cn('h-28 w-36 rounded-[18px]', imageClassName)}
         resizeMode="contain"
-        source={require('../../../assets/logo.png')}
+        source={brandMarkSources[source]}
       />
     </View>
   );

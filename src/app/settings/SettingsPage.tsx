@@ -200,7 +200,7 @@ export function SettingsPage() {
               Aqui voce muda seu perfil, salva um backup e apaga os dados se precisar.
             </Text>
           </View>
-          <BrandMark imageClassName="h-[72px] w-[72px] rounded-[16px]" />
+          <BrandMark imageClassName="h-[72px] w-[72px] rounded-[16px]" source="splash" />
         </View>
 
         <AppInfoSection />

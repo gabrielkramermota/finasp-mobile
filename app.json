@@ -8,7 +8,7 @@
       "policy": "appVersion"
     },
     "web": {
-      "favicon": "./assets/logo-sem-bg.png"
+      "favicon": "./assets/logo-f.png"
     },
     "experiments": {
       "tsconfigPaths": true
@@ -40,7 +40,7 @@
       "expo-asset"
     ],
     "orientation": "portrait",
-    "icon": "./assets/logo-sem-bg.png",
+    "icon": "./assets/logo-f.png",
     "userInterfaceStyle": "dark",
     "splash": {
       "image": "./assets/logo-sem-bg.png",
@@ -57,8 +57,14 @@
       "package": "com.finasp.app",
       "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo-sem-bg.png",
+        "foregroundImage": "./assets/logo-f.png",
         "backgroundColor": "#09090b"
+      },
+      "permissions": ["android.permission.RECORD_AUDIO", "android.permission.MODIFY_AUDIO_SETTINGS"]
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8d8cc2f8-25c1-4eef-ae79-4c90d0c28aa3"
       }
     }
   }
