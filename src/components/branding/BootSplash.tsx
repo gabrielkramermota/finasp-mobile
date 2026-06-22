@@ -25,7 +25,7 @@ export function BootSplash({ message, title }: BootSplashProps) {
       </View>
 
       <View className="mt-8 items-center">
-        <ActivityIndicator color="#2dd4bf" size="large" />
+        <ActivityIndicator color="#2563eb" size="large" />
       </View>
     </View>
   );

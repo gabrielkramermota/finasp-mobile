@@ -7,7 +7,7 @@ export const appColors = {
   contentSecondary: '#d4d4d8',
   contentMuted: '#a1a1aa',
   contentSubtle: '#71717a',
-  brand: '#3b82f6',
+  brand: '#2563eb',
   brand200: '#93c5fd',
   brand300: '#60a5fa',
   brandSoft: 'rgba(59, 130, 246, 0.14)',

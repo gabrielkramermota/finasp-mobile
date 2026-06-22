@@ -44,7 +44,7 @@ export async function configureLocalNotifications() {
     await Notifications.setNotificationChannelAsync(paymentReminderChannelId, {
       name: 'Pagamentos do mes',
       importance: Notifications.AndroidImportance.HIGH,
-      lightColor: '#2dd4bf',
+      lightColor: '#2563eb',
       sound: paymentReminderSound,
       vibrationPattern: [0, 180, 120, 180],
     });

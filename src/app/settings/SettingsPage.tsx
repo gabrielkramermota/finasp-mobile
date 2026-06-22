@@ -195,7 +195,9 @@ export function SettingsPage() {
             size="sm"
           />
           <View className="min-w-0 flex-1">
-            <Text className="text-content-primary text-3xl font-black tracking-tight">Configurações</Text>
+            <Text className="text-content-primary text-3xl font-black tracking-tight">
+              Configurações
+            </Text>
           </View>
         </View>
 

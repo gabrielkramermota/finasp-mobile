@@ -34,7 +34,7 @@ export function ProfileSettingsSection({
     <View className="border-border-subtle bg-surface rounded-[18px] border px-4 py-4">
       <View className="mb-4 flex-row items-center gap-3">
         <View className="bg-brand-soft h-10 w-10 items-center justify-center rounded-[14px]">
-          <UserRound color="#5eead4" size={20} strokeWidth={2.5} />
+          <UserRound color="#60a5fa" size={20} strokeWidth={2.5} />
         </View>
         <View className="min-w-0 flex-1">
           <Text className="text-content-primary text-lg font-black tracking-tight">Perfil</Text>

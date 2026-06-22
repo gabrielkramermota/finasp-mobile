@@ -20,7 +20,7 @@ export function SettingsCountsSection({ counts }: SettingsCountsSectionProps) {
     <View className="border-border-subtle bg-surface rounded-[16px] border px-4 py-4">
       <View className="mb-3 flex-row items-center gap-3">
         <View className="bg-brand-soft h-9 w-9 items-center justify-center rounded-[12px]">
-          <Database color="#5eead4" size={18} strokeWidth={2.5} />
+          <Database color="#60a5fa" size={18} strokeWidth={2.5} />
         </View>
         <View className="min-w-0 flex-1">
           <Text className="text-content-primary text-base font-black tracking-tight">

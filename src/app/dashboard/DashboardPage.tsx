@@ -186,7 +186,7 @@ export function DashboardPage({ selectedMonth, onChangeMonth }: DashboardPagePro
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View className="gap-4 px-5 pt-6 pb-8">
-        <View className="border-border-subtle bg-surface flex-row items-center justify-between gap-4 rounded-[18px] border px-4 py-4">
+        <View className="flex-row items-center justify-between gap-4">
           <View className="flex-1">
             <Text className="text-brand-200 text-[11px] font-semibold tracking-[1.6px] uppercase">
               Bem-vindo

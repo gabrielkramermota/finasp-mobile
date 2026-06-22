@@ -15,7 +15,7 @@ export function BottomTabBar({ activeTab, onChangeTab }: BottomTabBarProps) {
     <View className="border-border-subtle bg-surface mx-4 mb-4 flex-row rounded-[20px] border px-2 py-2">
       {appTabs.map((tab) => {
         const isActive = tab.key === activeTab;
-        const iconColor = isActive ? '#5eead4' : '#8a98a8';
+        const iconColor = isActive ? '#60a5fa' : '#8a98a8';
         const Icon = tab.Icon;
 
         return (
