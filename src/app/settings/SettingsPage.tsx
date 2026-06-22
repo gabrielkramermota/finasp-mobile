@@ -1,7 +1,7 @@
 import * as ImagePicker from 'expo-image-picker';
 import React, { useState, useEffect } from 'react';
 
-import { BrandMark } from '../../components/branding/BrandMark';
+import { ProfileAvatar } from '../../components/profile/ProfileAvatar';
 import { AppInfoSection } from '../../components/settings/AppInfoSection';
 import { BackupSettingsSection } from '../../components/settings/BackupSettingsSection';
 import { DatabaseResetSection } from '../../components/settings/DatabaseResetSection';
@@ -187,23 +187,17 @@ export function SettingsPage() {
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      <View className="gap-4 px-5 pt-6 pb-8">
-        <View className="flex-row items-start justify-between gap-4">
-          <View className="flex-1">
-            <Text className="text-brand-200 text-[11px] font-semibold tracking-[1.6px] uppercase">
-              Configuracoes
-            </Text>
-            <Text className="text-content-primary mt-3 text-[32px] font-black tracking-tight">
-              Seu app
-            </Text>
-            <Text className="text-content-secondary mt-3 max-w-[240px] text-base leading-7">
-              Aqui voce muda seu perfil, salva um backup e apaga os dados se precisar.
-            </Text>
+      <View className="gap-3 px-5 pt-6 pb-8">
+        <View className="flex-row items-center gap-3 pb-2">
+          <ProfileAvatar
+            name={profile?.name ?? (draftName || 'Finasp')}
+            photoUri={profile?.photoUri ?? draftPhotoUri}
+            size="sm"
+          />
+          <View className="min-w-0 flex-1">
+            <Text className="text-content-primary text-3xl font-black tracking-tight">Configurações</Text>
           </View>
-          <BrandMark imageClassName="h-[72px] w-[72px] rounded-[16px]" source="splash" />
         </View>
-
-        <AppInfoSection />
 
         <ProfileSettingsSection
           draftName={draftName}
@@ -231,6 +225,8 @@ export function SettingsPage() {
           onCancelReset={() => setIsConfirmingReset(false)}
           onResetDatabase={handleResetDatabase}
         />
+
+        <AppInfoSection />
       </View>
     </ScrollView>
   );

@@ -2,6 +2,7 @@ import React from 'react';
 import type {
   ActivityIndicatorProps,
   ImageProps,
+  ModalProps,
   PressableProps,
   ScrollViewProps,
   TextInputProps,
@@ -11,6 +12,7 @@ import type {
 import {
   ActivityIndicator as RNActivityIndicator,
   Image as RNImage,
+  Modal as RNModal,
   Pressable as RNPressable,
   ScrollView as RNScrollView,
   Text as RNText,
@@ -29,3 +31,4 @@ export const Pressable = RNPressable as unknown as React.ComponentType<Pressable
 export const TextInput = RNTextInput as unknown as React.ComponentType<TextInputProps>;
 export const ActivityIndicator =
   RNActivityIndicator as unknown as React.ComponentType<ActivityIndicatorProps>;
+export const Modal = RNModal as unknown as React.ComponentType<ModalProps>;

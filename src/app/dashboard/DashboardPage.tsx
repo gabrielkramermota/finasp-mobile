@@ -14,8 +14,8 @@ import { PlannerItemRow } from '../../components/planner/PlannerItemRow';
 import { PlannerSectionCard } from '../../components/planner/PlannerSectionCard';
 import { ProfileAvatar } from '../../components/profile/ProfileAvatar';
 import { SummaryMetricCard } from '../../components/planner/SummaryMetricCard';
-import { ChoiceChip } from '../../components/ui/ChoiceChip';
 import { ScrollView, Text, View } from '../../components/ui/NativePrimitives';
+import { SelectFilter } from '../../components/ui/SelectFilter';
 import { useMonthlyPlannerData } from '../../service/planner/planner-repository';
 import { useUserProfile } from '../../service/user/user-repository';
 import {
@@ -57,37 +57,19 @@ function buildFilterAccessory(
 ) {
   return (
     <View className="gap-3">
-      <View>
-        <Text className="text-content-subtle mb-2 text-[10px] font-semibold tracking-[1.2px] uppercase">
-          Tipo
-        </Text>
-        <View className="flex-row flex-wrap gap-2">
-          {plannerTypeFilterOptions.map((option) => (
-            <ChoiceChip
-              key={option.key}
-              isSelected={selectedType === option.key}
-              label={option.label}
-              onPress={() => setSelectedType(option.key)}
-            />
-          ))}
-        </View>
-      </View>
+      <SelectFilter
+        options={plannerTypeFilterOptions}
+        selectedKey={selectedType}
+        onSelect={setSelectedType}
+        label="Tipo"
+      />
 
-      <View>
-        <Text className="text-content-subtle mb-2 text-[10px] font-semibold tracking-[1.2px] uppercase">
-          Ordem
-        </Text>
-        <View className="flex-row flex-wrap gap-2">
-          {plannerSortOptions.map((option) => (
-            <ChoiceChip
-              key={option.key}
-              isSelected={selectedSort === option.key}
-              label={option.label}
-              onPress={() => setSelectedSort(option.key)}
-            />
-          ))}
-        </View>
-      </View>
+      <SelectFilter
+        options={plannerSortOptions}
+        selectedKey={selectedSort}
+        onSelect={setSelectedSort}
+        label="Ordem"
+      />
     </View>
   );
 }

@@ -5,11 +5,15 @@ import {
   getInstallmentProgressPercentage,
   getInstallmentRemainingCount,
 } from '../../domain/planner/installment-progress';
-import { PlannerSectionCard } from '../../components/planner/PlannerSectionCard';
-import { ChoiceChip } from '../../components/ui/ChoiceChip';
+import { IncomeModal } from '../../components/entries-modals/IncomeModal';
+import { FixedExpenseModal } from '../../components/entries-modals/FixedExpenseModal';
+import { MonthlyExpenseModal } from '../../components/entries-modals/MonthlyExpenseModal';
+import { InstallmentModal } from '../../components/entries-modals/InstallmentModal';
+import { InvestmentModal } from '../../components/entries-modals/InvestmentModal';
+import { PersonPaymentModal } from '../../components/entries-modals/PersonPaymentModal';
 import { ScrollView, Text, View } from '../../components/ui/NativePrimitives';
 import { PrimaryButton } from '../../components/ui/PrimaryButton';
-import { TextField } from '../../components/ui/TextField';
+import { SelectFilter } from '../../components/ui/SelectFilter';
 import { useToast } from '../../components/ui/ToastProvider';
 import {
   createFixedExpenseItem,
@@ -90,26 +94,46 @@ export function EntriesPage({ selectedMonth }: EntriesPageProps) {
   const { data, error } = useMonthlyPlannerData(selectedMonth);
   const { showToast } = useToast();
   const [selectedType, setSelectedType] = useState<PlannerTypeFilter>('all');
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Modal visibility states
+  const [isIncomeModalOpen, setIsIncomeModalOpen] = useState(false);
+  const [isFixedExpenseModalOpen, setIsFixedExpenseModalOpen] = useState(false);
+  const [isMonthlyExpenseModalOpen, setIsMonthlyExpenseModalOpen] = useState(false);
+  const [isInstallmentModalOpen, setIsInstallmentModalOpen] = useState(false);
+  const [isInvestmentModalOpen, setIsInvestmentModalOpen] = useState(false);
+  const [isPersonPaymentModalOpen, setIsPersonPaymentModalOpen] = useState(false);
+
+  // Income form state
   const [incomeTitle, setIncomeTitle] = useState('');
   const [incomeAmount, setIncomeAmount] = useState('');
   const [incomeSourceType, setIncomeSourceType] = useState<IncomeSourceType>('salary');
+
+  // Fixed expense form state
   const [fixedTitle, setFixedTitle] = useState('');
   const [fixedAmount, setFixedAmount] = useState('');
+
+  // Monthly expense form state
+  const [monthlyExpenseTitle, setMonthlyExpenseTitle] = useState('');
+  const [monthlyExpenseAmount, setMonthlyExpenseAmount] = useState('');
+
+  // Installment form state
   const [installmentTitle, setInstallmentTitle] = useState('');
   const [installmentAmount, setInstallmentAmount] = useState('');
   const [installmentDueDay, setInstallmentDueDay] = useState('');
   const [installmentReference, setInstallmentReference] = useState('');
   const [installmentTotalCount, setInstallmentTotalCount] = useState('');
+
+  // Investment form state
   const [investmentTitle, setInvestmentTitle] = useState('');
   const [investmentAmount, setInvestmentAmount] = useState('');
   const [investmentType, setInvestmentType] = useState<InvestmentType>('reserve');
-  const [monthlyExpenseTitle, setMonthlyExpenseTitle] = useState('');
-  const [monthlyExpenseAmount, setMonthlyExpenseAmount] = useState('');
+
+  // Person payment form state
   const [personPaymentName, setPersonPaymentName] = useState('');
   const [personPaymentAmount, setPersonPaymentAmount] = useState('');
   const [personPaymentDueDay, setPersonPaymentDueDay] = useState('');
   const [personPaymentDescription, setPersonPaymentDescription] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
 
   async function handleIncomeCreate() {
     setIsSaving(true);
@@ -130,6 +154,7 @@ export function EntriesPage({ selectedMonth }: EntriesPageProps) {
         onSuccess: () => {
           setIncomeTitle('');
           setIncomeAmount('');
+          setIsIncomeModalOpen(false);
           showToast({ message: 'Renda cadastrada com sucesso.', playSound: true, tone: 'success' });
         },
       });
@@ -161,6 +186,7 @@ export function EntriesPage({ selectedMonth }: EntriesPageProps) {
         onSuccess: () => {
           setFixedTitle('');
           setFixedAmount('');
+          setIsFixedExpenseModalOpen(false);
           showToast({
             message: 'Despesa fixa cadastrada com sucesso.',
             playSound: true,
@@ -217,6 +243,7 @@ export function EntriesPage({ selectedMonth }: EntriesPageProps) {
       setInstallmentDueDay('');
       setInstallmentReference('');
       setInstallmentTotalCount('');
+      setIsInstallmentModalOpen(false);
       showToast({ message: 'Parcela cadastrada com sucesso.', playSound: true, tone: 'success' });
     } catch (caughtError) {
       showToast({
@@ -247,6 +274,7 @@ export function EntriesPage({ selectedMonth }: EntriesPageProps) {
         onSuccess: () => {
           setInvestmentTitle('');
           setInvestmentAmount('');
+          setIsInvestmentModalOpen(false);
           showToast({ message: 'Item cadastrado com sucesso.', playSound: true, tone: 'success' });
         },
       });
@@ -279,6 +307,7 @@ export function EntriesPage({ selectedMonth }: EntriesPageProps) {
         onSuccess: () => {
           setMonthlyExpenseTitle('');
           setMonthlyExpenseAmount('');
+          setIsMonthlyExpenseModalOpen(false);
           showToast({ message: 'Gasto cadastrado com sucesso.', playSound: true, tone: 'success' });
         },
       });
@@ -323,6 +352,7 @@ export function EntriesPage({ selectedMonth }: EntriesPageProps) {
       setPersonPaymentAmount('');
       setPersonPaymentDueDay('');
       setPersonPaymentDescription('');
+      setIsPersonPaymentModalOpen(false);
       showToast({
         message: getReminderMessage(reminderResult.status),
         playSound: true,
@@ -342,360 +372,196 @@ export function EntriesPage({ selectedMonth }: EntriesPageProps) {
   }
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View className="gap-4 px-5 pt-6 pb-8">
-        <View>
-          <Text className="text-brand-200 text-[11px] font-semibold tracking-[1.6px] uppercase">
-            {data.selectedMonthLabel}
-          </Text>
-          <Text className="text-content-primary mt-3 text-[32px] font-black tracking-tight">
-            Cadastro mensal
-          </Text>
-          <Text className="text-content-secondary mt-3 max-w-[300px] text-base leading-7">
-            Escolha o bloco que quer preencher. Tudo entra direto no mes filtrado e recalcula o
-            dashboard automaticamente.
-          </Text>
-        </View>
-
-        <View className="border-border-subtle bg-surface rounded-[18px] border px-4 py-4">
-          <Text className="text-content-subtle text-[10px] font-semibold tracking-[1.2px] uppercase">
-            Mes ativo
-          </Text>
-          <Text className="text-content-primary mt-2 text-lg font-black tracking-tight">
-            {data.selectedMonthLabel}
-          </Text>
-          <Text className="text-content-secondary mt-2 text-sm leading-6">
-            O mes e definido na aba Resumo e todo cadastro desta tela entra nesse periodo.
-          </Text>
-        </View>
-
-        <View className="border-border-subtle bg-surface rounded-[18px] border px-4 py-4">
-          <Text className="text-content-subtle text-[10px] font-semibold tracking-[1.2px] uppercase">
-            Visao rapida
-          </Text>
-          <Text className="text-content-primary mt-2 text-lg font-black tracking-tight">
-            Renda: {formatCurrencyBRL(data.summary.incomeTotal)}
-          </Text>
-          <Text className="text-content-secondary mt-1 text-sm leading-6">
-            Despesas e parcelas: {formatCurrencyBRL(data.summary.committedExpenseTotal)}
-          </Text>
-          <Text className="text-content-secondary mt-1 text-sm leading-6">
-            Gastos do mes: {formatCurrencyBRL(data.summary.monthlyExpenseTotal)}
-          </Text>
-          <Text className="text-content-secondary mt-1 text-sm leading-6">
-            Investimentos: {formatCurrencyBRL(data.summary.investmentTotal)}
-          </Text>
-        </View>
-
-        <View className="border-border-subtle bg-surface rounded-[18px] border px-4 py-4">
-          <Text className="text-content-subtle text-[10px] font-semibold tracking-[1.2px] uppercase">
-            Tipo de cadastro
-          </Text>
-          <View className="mt-3 flex-row flex-wrap gap-2">
-            {plannerTypeFilterOptions.map((option) => (
-              <ChoiceChip
-                key={option.key}
-                isSelected={selectedType === option.key}
-                label={option.label}
-                onPress={() => setSelectedType(option.key)}
-              />
-            ))}
+    <>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View className="gap-4 px-5 pt-6 pb-8">
+          <View>
+            <Text className="text-brand-200 text-[11px] font-semibold tracking-[1.6px] uppercase">
+              {data.selectedMonthLabel}
+            </Text>
+            <Text className="text-content-primary mt-3 text-[32px] font-black tracking-tight">
+              Cadastro mensal
+            </Text>
+            <Text className="text-content-secondary mt-3 max-w-[300px] text-base leading-7">
+              Clique nos botões abaixo para cadastrar seus dados. O mês é definido na aba Resumo.
+            </Text>
           </View>
-        </View>
 
-        {matchesPlannerTypeFilter('income', selectedType) ? (
-          <PlannerSectionCard title="Adicionar renda">
-            <View className="gap-4 py-2">
-              <TextField
-                label="Nome"
-                onChangeText={setIncomeTitle}
-                placeholder="Trabalho, extra, dividendos"
-                value={incomeTitle}
-              />
-              <TextField
-                keyboardType="numeric"
-                label="Valor"
-                onChangeText={setIncomeAmount}
-                placeholder="3500"
-                prefix="R$"
-                value={incomeAmount}
-              />
-              <View>
-                <Text className="text-content-subtle mb-2 text-[11px] font-semibold tracking-[1.2px] uppercase">
-                  Tipo
-                </Text>
-                <View className="flex-row flex-wrap gap-2">
-                  <ChoiceChip
-                    isSelected={incomeSourceType === 'salary'}
-                    label="Salario"
-                    onPress={() => setIncomeSourceType('salary')}
-                  />
-                  <ChoiceChip
-                    isSelected={incomeSourceType === 'extra'}
-                    label="Extra"
-                    onPress={() => setIncomeSourceType('extra')}
-                  />
-                  <ChoiceChip
-                    isSelected={incomeSourceType === 'dividend'}
-                    label="Dividendos"
-                    onPress={() => setIncomeSourceType('dividend')}
-                  />
-                  <ChoiceChip
-                    isSelected={incomeSourceType === 'other'}
-                    label="Outro"
-                    onPress={() => setIncomeSourceType('other')}
-                  />
-                </View>
-              </View>
-              <PrimaryButton
-                disabled={isSaving}
-                onPress={handleIncomeCreate}
-                title={isSaving ? 'Salvando...' : 'Adicionar renda'}
-              />
-            </View>
-          </PlannerSectionCard>
-        ) : null}
-
-        {matchesPlannerTypeFilter('fixed-expense', selectedType) ? (
-          <PlannerSectionCard title="Adicionar despesa fixa">
-            <View className="gap-4 py-2">
-              <TextField
-                label="Nome"
-                onChangeText={setFixedTitle}
-                placeholder="Internet, academia, aluguel"
-                value={fixedTitle}
-              />
-              <TextField
-                keyboardType="numeric"
-                label="Valor"
-                onChangeText={setFixedAmount}
-                placeholder="120"
-                prefix="R$"
-                value={fixedAmount}
-              />
-              <PrimaryButton
-                disabled={isSaving}
-                onPress={handleFixedExpenseCreate}
-                title={isSaving ? 'Salvando...' : 'Adicionar despesa fixa'}
-              />
-            </View>
-          </PlannerSectionCard>
-        ) : null}
-
-        {matchesPlannerTypeFilter('monthly-expense', selectedType) ? (
-          <PlannerSectionCard title="Adicionar gasto do mes">
-            <View className="gap-4 py-2">
-              <TextField
-                label="Nome"
-                onChangeText={setMonthlyExpenseTitle}
-                placeholder="Hamburguer, sorvete, mercado"
-                value={monthlyExpenseTitle}
-              />
-              <TextField
-                keyboardType="numeric"
-                label="Valor"
-                onChangeText={setMonthlyExpenseAmount}
-                placeholder="20"
-                prefix="R$"
-                value={monthlyExpenseAmount}
-              />
-              <PrimaryButton
-                disabled={isSaving}
-                onPress={handleMonthlyExpenseCreate}
-                title={isSaving ? 'Salvando...' : 'Adicionar gasto'}
-              />
-            </View>
-          </PlannerSectionCard>
-        ) : null}
-
-        {matchesPlannerTypeFilter('installment', selectedType) ? (
-          <PlannerSectionCard title="Adicionar parcela">
-            <View className="gap-4 py-2">
-              <TextField
-                label="Nome"
-                onChangeText={setInstallmentTitle}
-                placeholder="Carro, iPhone, TV"
-                value={installmentTitle}
-              />
-              <TextField
-                keyboardType="numeric"
-                label="Valor"
-                onChangeText={setInstallmentAmount}
-                placeholder="450"
-                prefix="R$"
-                value={installmentAmount}
-              />
-              <View className="flex-row gap-3">
-                <View className="flex-1">
-                  <TextField
-                    keyboardType="numeric"
-                    label="Vencimento"
-                    onChangeText={setInstallmentDueDay}
-                    placeholder="10"
-                    value={installmentDueDay}
-                  />
-                </View>
-                <View className="flex-1">
-                  <TextField
-                    keyboardType="numeric"
-                    label="Parcelas"
-                    onChangeText={setInstallmentTotalCount}
-                    placeholder="12"
-                    value={installmentTotalCount}
-                  />
-                </View>
-              </View>
-              <TextField
-                label="Referencia"
-                onChangeText={setInstallmentReference}
-                placeholder="Cartao ou contrato"
-                value={installmentReference}
-              />
-              {installmentAmount && installmentTotalCount ? (
-                <View className="border-border-subtle bg-background rounded-[14px] border px-4 py-4">
-                  <Text className="text-content-subtle text-[10px] font-semibold tracking-[1.2px] uppercase">
-                    Projecao
-                  </Text>
-                  <Text className="text-content-primary mt-2 text-sm leading-6 font-semibold">
-                    Valor total previsto:{' '}
-                    {formatCurrencyBRL(
-                      (parseAmount(installmentAmount) || 0) *
-                        (parseInteger(installmentTotalCount) || 0)
-                    )}
-                  </Text>
-                  <Text className="text-content-secondary mt-2 text-sm leading-6">
-                    Restam{' '}
-                    {String(
-                      getInstallmentRemainingCount({
-                        id: 'preview',
-                        title: installmentTitle || 'Parcela',
-                        amount: parseAmount(installmentAmount) || 0,
-                        competenceMonth: data.selectedMonth,
-                        createdAt: '',
-                        dueDay: parseInteger(installmentDueDay) || 1,
-                        paidInstallments: 0,
-                        referenceLabel: installmentReference || null,
-                        totalInstallments: parseInteger(installmentTotalCount) || 1,
-                        updatedAt: '',
-                      })
-                    )}{' '}
-                    parcelas e o progresso inicia em{' '}
-                    {formatPercentage(
-                      getInstallmentProgressPercentage({
-                        id: 'preview',
-                        title: installmentTitle || 'Parcela',
-                        amount: parseAmount(installmentAmount) || 0,
-                        competenceMonth: data.selectedMonth,
-                        createdAt: '',
-                        dueDay: parseInteger(installmentDueDay) || 1,
-                        paidInstallments: 0,
-                        referenceLabel: installmentReference || null,
-                        totalInstallments: parseInteger(installmentTotalCount) || 1,
-                        updatedAt: '',
-                      })
-                    )}
-                    .
-                  </Text>
-                </View>
-              ) : null}
-              <PrimaryButton
-                disabled={isSaving}
-                onPress={handleInstallmentCreate}
-                title={isSaving ? 'Salvando...' : 'Adicionar parcela'}
-              />
-            </View>
-          </PlannerSectionCard>
-        ) : null}
-
-        {matchesPlannerTypeFilter('person-payment', selectedType) ? (
-          <PlannerSectionCard title="Adicionar pessoa a pagar">
-            <View className="gap-4 py-2">
-              <TextField
-                label="Pessoa"
-                onChangeText={setPersonPaymentName}
-                placeholder="Nome da pessoa"
-                value={personPaymentName}
-              />
-              <TextField
-                keyboardType="numeric"
-                label="Valor"
-                onChangeText={setPersonPaymentAmount}
-                placeholder="250"
-                prefix="R$"
-                value={personPaymentAmount}
-              />
-              <TextField
-                keyboardType="numeric"
-                label="Dia de pagamento"
-                onChangeText={setPersonPaymentDueDay}
-                placeholder="15"
-                value={personPaymentDueDay}
-              />
-              <TextField
-                label="Descricao opcional"
-                multiline
-                onChangeText={setPersonPaymentDescription}
-                placeholder="Servico, combinado ou observacao"
-                value={personPaymentDescription}
-              />
-              <PrimaryButton
-                disabled={isSaving}
-                onPress={handlePersonPaymentCreate}
-                title={isSaving ? 'Salvando...' : 'Adicionar pessoa'}
-              />
-            </View>
-          </PlannerSectionCard>
-        ) : null}
-
-        {matchesPlannerTypeFilter('investment', selectedType) ? (
-          <PlannerSectionCard title="Adicionar reserva ou investimento">
-            <View className="gap-4 py-2">
-              <TextField
-                label="Nome"
-                onChangeText={setInvestmentTitle}
-                placeholder="Reserva, investimento"
-                value={investmentTitle}
-              />
-              <TextField
-                keyboardType="numeric"
-                label="Valor"
-                onChangeText={setInvestmentAmount}
-                placeholder="300"
-                prefix="R$"
-                value={investmentAmount}
-              />
-              <View>
-                <Text className="text-content-subtle mb-2 text-[11px] font-semibold tracking-[1.2px] uppercase">
-                  Tipo
-                </Text>
-                <View className="flex-row flex-wrap gap-2">
-                  <ChoiceChip
-                    isSelected={investmentType === 'reserve'}
-                    label="Reserva"
-                    onPress={() => setInvestmentType('reserve')}
-                  />
-                  <ChoiceChip
-                    isSelected={investmentType === 'investment'}
-                    label="Investimento"
-                    onPress={() => setInvestmentType('investment')}
-                  />
-                </View>
-              </View>
-              <PrimaryButton
-                disabled={isSaving}
-                onPress={handleInvestmentCreate}
-                title={isSaving ? 'Salvando...' : 'Adicionar item'}
-              />
-            </View>
-          </PlannerSectionCard>
-        ) : null}
-
-        {error ? (
-          <View className="border-expense/20 bg-expense-soft rounded-[18px] border px-4 py-4">
-            <Text className="text-expense text-sm leading-6">{error.message}</Text>
+          <View className="border-border-subtle bg-surface rounded-[18px] border px-4 py-4">
+            <Text className="text-content-subtle text-[10px] font-semibold tracking-[1.2px] uppercase">
+              Mês ativo
+            </Text>
+            <Text className="text-content-primary mt-2 text-lg font-black tracking-tight">
+              {data.selectedMonthLabel}
+            </Text>
+            <Text className="text-content-secondary mt-2 text-sm leading-6">
+              O mês é definido na aba Resumo e todo cadastro desta tela entra nesse período.
+            </Text>
           </View>
-        ) : null}
-      </View>
-    </ScrollView>
+
+          <View className="border-border-subtle bg-surface rounded-[18px] border px-4 py-4">
+            <Text className="text-content-subtle text-[10px] font-semibold tracking-[1.2px] uppercase">
+              Visão rápida
+            </Text>
+            <Text className="text-content-primary mt-2 text-lg font-black tracking-tight">
+              Renda: {formatCurrencyBRL(data.summary.incomeTotal)}
+            </Text>
+            <Text className="text-content-secondary mt-1 text-sm leading-6">
+              Despesas e parcelas: {formatCurrencyBRL(data.summary.committedExpenseTotal)}
+            </Text>
+            <Text className="text-content-secondary mt-1 text-sm leading-6">
+              Gastos do mês: {formatCurrencyBRL(data.summary.monthlyExpenseTotal)}
+            </Text>
+            <Text className="text-content-secondary mt-1 text-sm leading-6">
+              Investimentos: {formatCurrencyBRL(data.summary.investmentTotal)}
+            </Text>
+          </View>
+
+          <View className="border-border-subtle bg-surface rounded-[18px] border px-4 py-4">
+            <Text className="text-content-subtle text-[10px] font-semibold tracking-[1.2px] uppercase">
+              Tipo de cadastro
+            </Text>
+            <View className="mt-3">
+              <SelectFilter
+                options={plannerTypeFilterOptions}
+                selectedKey={selectedType}
+                onSelect={setSelectedType}
+                label="Filtro de cadastro"
+              />
+            </View>
+          </View>
+
+          {/* Action Buttons Grid */}
+          <View className="gap-3">
+            {matchesPlannerTypeFilter('income', selectedType) ? (
+              <PrimaryButton onPress={() => setIsIncomeModalOpen(true)} title="+ Adicionar renda" />
+            ) : null}
+
+            {matchesPlannerTypeFilter('fixed-expense', selectedType) ? (
+              <PrimaryButton
+                onPress={() => setIsFixedExpenseModalOpen(true)}
+                title="+ Adicionar despesa fixa"
+              />
+            ) : null}
+
+            {matchesPlannerTypeFilter('monthly-expense', selectedType) ? (
+              <PrimaryButton
+                onPress={() => setIsMonthlyExpenseModalOpen(true)}
+                title="+ Adicionar gasto"
+              />
+            ) : null}
+
+            {matchesPlannerTypeFilter('installment', selectedType) ? (
+              <PrimaryButton
+                onPress={() => setIsInstallmentModalOpen(true)}
+                title="+ Adicionar parcela"
+              />
+            ) : null}
+
+            {matchesPlannerTypeFilter('person-payment', selectedType) ? (
+              <PrimaryButton
+                onPress={() => setIsPersonPaymentModalOpen(true)}
+                title="+ Adicionar pessoa a pagar"
+              />
+            ) : null}
+
+            {matchesPlannerTypeFilter('investment', selectedType) ? (
+              <PrimaryButton
+                onPress={() => setIsInvestmentModalOpen(true)}
+                title="+ Adicionar reserva ou investimento"
+              />
+            ) : null}
+          </View>
+
+          {error ? (
+            <View className="border-expense/20 bg-expense-soft rounded-[18px] border px-4 py-4">
+              <Text className="text-expense text-sm leading-6">{error.message}</Text>
+            </View>
+          ) : null}
+        </View>
+      </ScrollView>
+
+      {/* Modals */}
+      <IncomeModal
+        isVisible={isIncomeModalOpen}
+        onClose={() => setIsIncomeModalOpen(false)}
+        isLoading={isSaving}
+        title={incomeTitle}
+        amount={incomeAmount}
+        sourceType={incomeSourceType}
+        onTitleChange={setIncomeTitle}
+        onAmountChange={setIncomeAmount}
+        onSourceTypeChange={setIncomeSourceType}
+        onSubmit={handleIncomeCreate}
+      />
+
+      <FixedExpenseModal
+        isVisible={isFixedExpenseModalOpen}
+        onClose={() => setIsFixedExpenseModalOpen(false)}
+        isLoading={isSaving}
+        title={fixedTitle}
+        amount={fixedAmount}
+        onTitleChange={setFixedTitle}
+        onAmountChange={setFixedAmount}
+        onSubmit={handleFixedExpenseCreate}
+      />
+
+      <MonthlyExpenseModal
+        isVisible={isMonthlyExpenseModalOpen}
+        onClose={() => setIsMonthlyExpenseModalOpen(false)}
+        isLoading={isSaving}
+        title={monthlyExpenseTitle}
+        amount={monthlyExpenseAmount}
+        onTitleChange={setMonthlyExpenseTitle}
+        onAmountChange={setMonthlyExpenseAmount}
+        onSubmit={handleMonthlyExpenseCreate}
+      />
+
+      <InstallmentModal
+        isVisible={isInstallmentModalOpen}
+        onClose={() => setIsInstallmentModalOpen(false)}
+        isLoading={isSaving}
+        title={installmentTitle}
+        amount={installmentAmount}
+        dueDay={installmentDueDay}
+        reference={installmentReference}
+        totalCount={installmentTotalCount}
+        selectedMonth={selectedMonth}
+        onTitleChange={setInstallmentTitle}
+        onAmountChange={setInstallmentAmount}
+        onDueDayChange={setInstallmentDueDay}
+        onReferenceChange={setInstallmentReference}
+        onTotalCountChange={setInstallmentTotalCount}
+        onSubmit={handleInstallmentCreate}
+      />
+
+      <InvestmentModal
+        isVisible={isInvestmentModalOpen}
+        onClose={() => setIsInvestmentModalOpen(false)}
+        isLoading={isSaving}
+        title={investmentTitle}
+        amount={investmentAmount}
+        investmentType={investmentType}
+        onTitleChange={setInvestmentTitle}
+        onAmountChange={setInvestmentAmount}
+        onInvestmentTypeChange={setInvestmentType}
+        onSubmit={handleInvestmentCreate}
+      />
+
+      <PersonPaymentModal
+        isVisible={isPersonPaymentModalOpen}
+        onClose={() => setIsPersonPaymentModalOpen(false)}
+        isLoading={isSaving}
+        name={personPaymentName}
+        amount={personPaymentAmount}
+        dueDay={personPaymentDueDay}
+        description={personPaymentDescription}
+        onNameChange={setPersonPaymentName}
+        onAmountChange={setPersonPaymentAmount}
+        onDueDayChange={setPersonPaymentDueDay}
+        onDescriptionChange={setPersonPaymentDescription}
+        onSubmit={handlePersonPaymentCreate}
+      />
+    </>
   );
 }

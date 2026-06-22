@@ -15,8 +15,8 @@ import {
 } from '../../components/planner/PlannerItemEditorCard';
 import { PlannerItemRow } from '../../components/planner/PlannerItemRow';
 import { PlannerSectionCard } from '../../components/planner/PlannerSectionCard';
-import { ChoiceChip } from '../../components/ui/ChoiceChip';
 import { ScrollView, Text, View } from '../../components/ui/NativePrimitives';
+import { SelectFilter } from '../../components/ui/SelectFilter';
 import { useToast } from '../../components/ui/ToastProvider';
 import {
   advanceInstallmentPayment,
@@ -280,37 +280,19 @@ export function RecurringEntriesPage({ selectedMonth }: RecurringEntriesPageProp
 
         <PlannerSectionCard title="Filtros da lista">
           <View className="gap-4 py-2">
-            <View>
-              <Text className="text-content-subtle mb-2 text-[10px] font-semibold tracking-[1.2px] uppercase">
-                Tipo
-              </Text>
-              <View className="flex-row flex-wrap gap-2">
-                {plannerTypeFilterOptions.map((option) => (
-                  <ChoiceChip
-                    key={option.key}
-                    isSelected={selectedType === option.key}
-                    label={option.label}
-                    onPress={() => setSelectedType(option.key)}
-                  />
-                ))}
-              </View>
-            </View>
+            <SelectFilter
+              options={plannerTypeFilterOptions}
+              selectedKey={selectedType}
+              onSelect={setSelectedType}
+              label="Tipo"
+            />
 
-            <View>
-              <Text className="text-content-subtle mb-2 text-[10px] font-semibold tracking-[1.2px] uppercase">
-                Ordem
-              </Text>
-              <View className="flex-row flex-wrap gap-2">
-                {plannerSortOptions.map((option) => (
-                  <ChoiceChip
-                    key={option.key}
-                    isSelected={selectedSort === option.key}
-                    label={option.label}
-                    onPress={() => setSelectedSort(option.key)}
-                  />
-                ))}
-              </View>
-            </View>
+            <SelectFilter
+              options={plannerSortOptions}
+              selectedKey={selectedSort}
+              onSelect={setSelectedSort}
+              label="Ordem"
+            />
           </View>
         </PlannerSectionCard>
 
