@@ -10,7 +10,7 @@ type BrandMarkProps = {
 };
 
 const brandMarkSources = {
-  logo: require('../../../assets/logo.png'),
+  logo: require('../../../assets/logo2.png'),
   splash: require('../../../assets/splash.png'),
 } as const;
 
