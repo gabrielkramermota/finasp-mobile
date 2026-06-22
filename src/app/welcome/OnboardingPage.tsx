@@ -115,10 +115,6 @@ export function OnboardingPage() {
       <View className="gap-6 px-5 pt-6 pb-10">
         {step === 'intro' ? (
           <>
-            <View className="items-center pt-6">
-              <BrandMark imageClassName="h-32 w-48" />
-            </View>
-
             <View className="items-start">
               <Text className="text-brand-200 text-[11px] font-semibold tracking-[1.6px] uppercase">
                 Primeiro acesso

@@ -7,6 +7,7 @@ import {
   incomeItemsTable,
   installmentItemsTable,
   investmentItemsTable,
+  monthlyExpenseItemsTable,
   personPaymentItemsTable,
 } from '../../storage/sqlite/schema/finance-schema';
 import { resetFinanceDatabase as resetDatabaseTables } from '../../storage/sqlite/seed/seed-finance-database';
@@ -16,11 +17,13 @@ import type {
   CreateIncomeItemInput,
   CreateInstallmentItemInput,
   CreateInvestmentItemInput,
+  CreateMonthlyExpenseItemInput,
   CreatePersonPaymentItemInput,
   FixedExpenseItem,
   IncomeItem,
   InstallmentItem,
   InvestmentItem,
+  MonthlyExpenseItem,
   MonthlyPlannerData,
   PlannerSectionKey,
   PersonPaymentItem,
@@ -28,6 +31,7 @@ import type {
   UpdateIncomeItemInput,
   UpdateInstallmentItemInput,
   UpdateInvestmentItemInput,
+  UpdateMonthlyExpenseItemInput,
   UpdatePersonPaymentItemInput,
 } from '../../domain/planner/planner-types';
 import {
@@ -64,6 +68,9 @@ export function useMonthlyPlannerData(selectedMonth: MonthKey) {
   const investmentItemsQuery = useLiveQuery(
     db.select().from(investmentItemsTable).orderBy(desc(investmentItemsTable.createdAt))
   );
+  const monthlyExpenseItemsQuery = useLiveQuery(
+    db.select().from(monthlyExpenseItemsTable).orderBy(desc(monthlyExpenseItemsTable.createdAt))
+  );
   const personPaymentItemsQuery = useLiveQuery(
     db
       .select()
@@ -81,6 +88,7 @@ export function useMonthlyPlannerData(selectedMonth: MonthKey) {
       fixedExpenseItems: (fixedExpenseItemsQuery.data ?? []) as FixedExpenseItem[],
       installmentItems: (installmentItemsQuery.data ?? []) as InstallmentItem[],
       investmentItems: (investmentItemsQuery.data ?? []) as InvestmentItem[],
+      monthlyExpenseItems: (monthlyExpenseItemsQuery.data ?? []) as MonthlyExpenseItem[],
       personPaymentItems: (personPaymentItemsQuery.data ?? []) as PersonPaymentItem[],
     },
     selectedMonth
@@ -93,6 +101,7 @@ export function useMonthlyPlannerData(selectedMonth: MonthKey) {
       fixedExpenseItemsQuery.error,
       installmentItemsQuery.error,
       investmentItemsQuery.error,
+      monthlyExpenseItemsQuery.error,
       personPaymentItemsQuery.error,
     ]),
   };
@@ -103,6 +112,7 @@ export function usePlannerSettingsData() {
   const fixedExpenseItemsQuery = useLiveQuery(db.select().from(fixedExpenseItemsTable));
   const installmentItemsQuery = useLiveQuery(db.select().from(installmentItemsTable));
   const investmentItemsQuery = useLiveQuery(db.select().from(investmentItemsTable));
+  const monthlyExpenseItemsQuery = useLiveQuery(db.select().from(monthlyExpenseItemsTable));
   const personPaymentItemsQuery = useLiveQuery(db.select().from(personPaymentItemsTable));
 
   return {
@@ -111,6 +121,7 @@ export function usePlannerSettingsData() {
       fixedExpenseItems: fixedExpenseItemsQuery.data?.length ?? 0,
       installmentItems: installmentItemsQuery.data?.length ?? 0,
       investmentItems: investmentItemsQuery.data?.length ?? 0,
+      monthlyExpenseItems: monthlyExpenseItemsQuery.data?.length ?? 0,
       personPaymentItems: personPaymentItemsQuery.data?.length ?? 0,
     },
     error: getPlannerError([
@@ -118,6 +129,7 @@ export function usePlannerSettingsData() {
       fixedExpenseItemsQuery.error,
       installmentItemsQuery.error,
       investmentItemsQuery.error,
+      monthlyExpenseItemsQuery.error,
       personPaymentItemsQuery.error,
     ]),
   };
@@ -305,6 +317,38 @@ export async function updateInvestmentItem({
     .where(eq(investmentItemsTable.id, id));
 }
 
+export async function createMonthlyExpenseItem({
+  competenceMonth,
+  title,
+  amount,
+}: CreateMonthlyExpenseItemInput) {
+  const timestamp = createTimestamp();
+
+  await db.insert(monthlyExpenseItemsTable).values({
+    id: createRecordId('monthly-expense'),
+    title,
+    amount,
+    competenceMonth,
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  });
+}
+
+export async function updateMonthlyExpenseItem({
+  id,
+  title,
+  amount,
+}: UpdateMonthlyExpenseItemInput) {
+  await db
+    .update(monthlyExpenseItemsTable)
+    .set({
+      amount,
+      title,
+      updatedAt: createTimestamp(),
+    })
+    .where(eq(monthlyExpenseItemsTable.id, id));
+}
+
 export async function createPersonPaymentItem({
   competenceMonth,
   personName,
@@ -470,6 +514,11 @@ export async function deletePlannerItem(section: PlannerSectionKey, id: string) 
 
     await cancelPersonPaymentReminder(personPayment[0]?.notificationId);
     await db.delete(personPaymentItemsTable).where(eq(personPaymentItemsTable.id, id));
+    return;
+  }
+
+  if (section === 'monthly-expense') {
+    await db.delete(monthlyExpenseItemsTable).where(eq(monthlyExpenseItemsTable.id, id));
     return;
   }
 

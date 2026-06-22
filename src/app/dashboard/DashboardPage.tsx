@@ -102,6 +102,7 @@ export function DashboardPage({ selectedMonth, onChangeMonth }: DashboardPagePro
   const sortedFixedExpenseItems = sortPlannerItems(data.fixedExpenseItems, selectedSort);
   const sortedInstallmentItems = sortPlannerItems(data.installmentItems, selectedSort);
   const sortedInvestmentItems = sortPlannerItems(data.investmentItems, selectedSort);
+  const sortedMonthlyExpenseItems = sortPlannerItems(data.monthlyExpenseItems, selectedSort);
   const sortedPersonPaymentItems = sortPlannerItems(data.personPaymentItems, selectedSort);
 
   const expenseBase = Math.max(data.summary.expenseTotal, 1);
@@ -124,6 +125,16 @@ export function DashboardPage({ selectedMonth, onChangeMonth }: DashboardPagePro
       value: formatCurrencyBRL(data.summary.installmentTotal),
       widthPercentage: data.summary.expenseTotal
         ? (data.summary.installmentTotal / expenseBase) * 100
+        : 0,
+    },
+    {
+      amount: data.summary.monthlyExpenseTotal,
+      colorClassName: 'bg-expense',
+      label: 'Gastos do mes',
+      percentageLabel: formatPercentage((data.summary.monthlyExpenseTotal / expenseBase) * 100),
+      value: formatCurrencyBRL(data.summary.monthlyExpenseTotal),
+      widthPercentage: data.summary.expenseTotal
+        ? (data.summary.monthlyExpenseTotal / expenseBase) * 100
         : 0,
     },
     {
@@ -163,6 +174,13 @@ export function DashboardPage({ selectedMonth, onChangeMonth }: DashboardPagePro
       subtitle: `${formatDayOfMonth(item.dueDay)} | Parcela ${String(
         getInstallmentCurrentNumber(item)
       )}/${String(item.totalInstallments)}`,
+      title: item.title,
+    })),
+    ...data.monthlyExpenseItems.map((item) => ({
+      id: item.id,
+      amount: item.amount,
+      amountLabel: formatCurrencyBRL(item.amount),
+      subtitle: 'Gasto do mes',
       title: item.title,
     })),
     ...data.personPaymentItems.map((item) => ({
@@ -218,7 +236,7 @@ export function DashboardPage({ selectedMonth, onChangeMonth }: DashboardPagePro
           </View>
         ) : null}
 
-        <View className="flex-row flex-wrap gap-3">
+        <View className="gap-3">
           <SummaryMetricCard
             description="Tudo que entrou no mes selecionado."
             title="Renda"
@@ -226,10 +244,16 @@ export function DashboardPage({ selectedMonth, onChangeMonth }: DashboardPagePro
             value={formatCurrencyBRL(data.summary.incomeTotal)}
           />
           <SummaryMetricCard
-            description="Fixas, parcelas e pessoas a pagar."
+            description="Fixas, gastos, parcelas e pessoas a pagar."
             title="Despesas e parcelas"
             tone="expense"
             value={formatCurrencyBRL(data.summary.committedExpenseTotal)}
+          />
+          <SummaryMetricCard
+            description="Compras avulsas lancadas neste mes."
+            title="Gastos do mes"
+            tone="expense"
+            value={formatCurrencyBRL(data.summary.monthlyExpenseTotal)}
           />
           <SummaryMetricCard
             description="Reserva e aportes cadastrados."
@@ -370,6 +394,27 @@ export function DashboardPage({ selectedMonth, onChangeMonth }: DashboardPagePro
           </PlannerSectionCard>
         ) : null}
 
+        {matchesPlannerTypeFilter('monthly-expense', selectedType) ? (
+          <PlannerSectionCard
+            title="Gastos do mes"
+            totalLabel="Valor total"
+            totalValue={formatCurrencyBRL(data.summary.monthlyExpenseTotal)}>
+            {sortedMonthlyExpenseItems.length ? (
+              sortedMonthlyExpenseItems.map((item, index) => (
+                <PlannerItemRow
+                  key={item.id}
+                  amount={formatCurrencyBRL(item.amount)}
+                  showBorder={index < sortedMonthlyExpenseItems.length - 1}
+                  title={item.title}
+                  tone="expense"
+                />
+              ))
+            ) : (
+              <EmptySection label="gastos do mes" />
+            )}
+          </PlannerSectionCard>
+        ) : null}
+
         {matchesPlannerTypeFilter('person-payment', selectedType) ? (
           <PlannerSectionCard
             title="Pessoas a pagar"
@@ -432,6 +477,12 @@ export function DashboardPage({ selectedMonth, onChangeMonth }: DashboardPagePro
             amount={formatCurrencyBRL(data.summary.committedExpenseTotal)}
             showBorder
             title="Despesas e parcelas"
+            tone="expense"
+          />
+          <PlannerItemRow
+            amount={formatCurrencyBRL(data.summary.monthlyExpenseTotal)}
+            showBorder
+            title="Gastos do mes"
             tone="expense"
           />
           <PlannerItemRow

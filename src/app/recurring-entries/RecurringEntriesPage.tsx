@@ -26,6 +26,7 @@ import {
   updateIncomeItem,
   updateInstallmentItem,
   updateInvestmentItem,
+  updateMonthlyExpenseItem,
   updatePersonPaymentItem,
   useMonthlyPlannerData,
 } from '../../service/planner/planner-repository';
@@ -129,6 +130,7 @@ export function RecurringEntriesPage({ selectedMonth }: RecurringEntriesPageProp
   const sortedFixedExpenseItems = sortPlannerItems(data.fixedExpenseItems, selectedSort);
   const sortedInstallmentItems = sortPlannerItems(data.installmentItems, selectedSort);
   const sortedInvestmentItems = sortPlannerItems(data.investmentItems, selectedSort);
+  const sortedMonthlyExpenseItems = sortPlannerItems(data.monthlyExpenseItems, selectedSort);
   const sortedPersonPaymentItems = sortPlannerItems(data.personPaymentItems, selectedSort);
   const isActionLocked = Boolean(isBusyId) || isSavingEdit;
 
@@ -173,6 +175,9 @@ export function RecurringEntriesPage({ selectedMonth }: RecurringEntriesPageProp
       } else if (payload.section === 'investment') {
         await updateInvestmentItem(payload);
         showToast({ message: 'Investimento atualizado com sucesso.', tone: 'success' });
+      } else if (payload.section === 'monthly-expense') {
+        await updateMonthlyExpenseItem(payload);
+        showToast({ message: 'Gasto atualizado com sucesso.', tone: 'success' });
       } else {
         const reminderResult = await updatePersonPaymentItem(payload);
 
@@ -441,6 +446,40 @@ export function RecurringEntriesPage({ selectedMonth }: RecurringEntriesPageProp
               ))
             ) : (
               <EmptySection label="parcelas" />
+            )}
+          </PlannerSectionCard>
+        ) : null}
+
+        {matchesPlannerTypeFilter('monthly-expense', selectedType) ? (
+          <PlannerSectionCard
+            title="Gastos do mes"
+            totalLabel="Total"
+            totalValue={formatCurrencyBRL(data.summary.monthlyExpenseTotal)}>
+            {sortedMonthlyExpenseItems.length ? (
+              sortedMonthlyExpenseItems.map((item, index) => (
+                <PlannerItemRow
+                  key={item.id}
+                  amount={formatCurrencyBRL(item.amount)}
+                  actions={[
+                    {
+                      label: 'Editar',
+                      onPress: () => handleStartEdit({ section: 'monthly-expense', item }),
+                      disabled: isActionLocked,
+                    },
+                    {
+                      label: isBusyId === item.id ? 'Excluindo...' : 'Excluir',
+                      onPress: () => handleRemove('monthly-expense', item.id),
+                      tone: 'danger',
+                      disabled: isActionLocked,
+                    },
+                  ]}
+                  showBorder={index < sortedMonthlyExpenseItems.length - 1}
+                  title={item.title}
+                  tone="expense"
+                />
+              ))
+            ) : (
+              <EmptySection label="gastos do mes" />
             )}
           </PlannerSectionCard>
         ) : null}

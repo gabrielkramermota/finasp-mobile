@@ -4,6 +4,7 @@ export type PlannerSectionKey =
   | 'income'
   | 'fixed-expense'
   | 'installment'
+  | 'monthly-expense'
   | 'investment'
   | 'person-payment';
 export type IncomeSourceType = 'salary' | 'extra' | 'dividend' | 'other';
@@ -35,6 +36,8 @@ export type InvestmentItem = PlannerBaseItem & {
   investmentType: InvestmentType;
 };
 
+export type MonthlyExpenseItem = PlannerBaseItem;
+
 export type PersonPaymentItem = PlannerBaseItem & {
   description?: string | null;
   dueDay: number;
@@ -49,6 +52,7 @@ export type MonthlyPlannerSummary = {
   fixedExpenseTotal: number;
   installmentTotal: number;
   investmentTotal: number;
+  monthlyExpenseTotal: number;
   personPaymentTotal: number;
   expenseTotal: number;
   spentPercentage: number;
@@ -63,6 +67,7 @@ export type MonthlyPlannerData = {
   fixedExpenseItems: FixedExpenseItem[];
   installmentItems: InstallmentItem[];
   investmentItems: InvestmentItem[];
+  monthlyExpenseItems: MonthlyExpenseItem[];
   personPaymentItems: PersonPaymentItem[];
   summary: MonthlyPlannerSummary;
 };
@@ -123,6 +128,18 @@ export type UpdateInvestmentItemInput = {
   title: string;
   amount: number;
   investmentType: InvestmentType;
+};
+
+export type CreateMonthlyExpenseItemInput = {
+  competenceMonth: MonthKey;
+  title: string;
+  amount: number;
+};
+
+export type UpdateMonthlyExpenseItemInput = {
+  id: string;
+  title: string;
+  amount: number;
 };
 
 export type CreatePersonPaymentItemInput = {

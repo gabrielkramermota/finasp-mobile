@@ -6,6 +6,7 @@ import {
   incomeItemsTable,
   installmentItemsTable,
   investmentItemsTable,
+  monthlyExpenseItemsTable,
   personPaymentItemsTable,
   recurringEntriesTable,
 } from '../schema/finance-schema';
@@ -13,6 +14,7 @@ import { db } from '../client';
 
 export async function resetFinanceDatabase() {
   await db.delete(personPaymentItemsTable);
+  await db.delete(monthlyExpenseItemsTable);
   await db.delete(investmentItemsTable);
   await db.delete(installmentItemsTable);
   await db.delete(fixedExpenseItemsTable);

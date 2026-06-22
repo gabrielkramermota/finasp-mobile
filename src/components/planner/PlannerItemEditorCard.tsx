@@ -7,6 +7,7 @@ import type {
   InstallmentItem,
   InvestmentItem,
   InvestmentType,
+  MonthlyExpenseItem,
   PersonPaymentItem,
 } from '../../domain/planner/planner-types';
 import { cn } from '../../utils/cn';
@@ -21,6 +22,7 @@ export type EditablePlannerItem =
   | { section: 'fixed-expense'; item: FixedExpenseItem }
   | { section: 'installment'; item: InstallmentItem }
   | { section: 'investment'; item: InvestmentItem }
+  | { section: 'monthly-expense'; item: MonthlyExpenseItem }
   | { section: 'person-payment'; item: PersonPaymentItem };
 
 export type PlannerItemEditorSavePayload =
@@ -52,6 +54,12 @@ export type PlannerItemEditorSavePayload =
       title: string;
       amount: number;
       investmentType: InvestmentType;
+    }
+  | {
+      section: 'monthly-expense';
+      id: string;
+      title: string;
+      amount: number;
     }
   | {
       section: 'person-payment';
@@ -97,6 +105,10 @@ function getEditorTitle(section: EditablePlannerItem['section']) {
 
   if (section === 'investment') {
     return 'Editar investimento';
+  }
+
+  if (section === 'monthly-expense') {
+    return 'Editar gasto do mes';
   }
 
   return 'Editar pessoa a pagar';
@@ -147,6 +159,12 @@ export function PlannerItemEditorCard({
       setTitle(editingItem.item.title);
       setAmount(formatAmount(editingItem.item.amount));
       setInvestmentType(editingItem.item.investmentType);
+      return;
+    }
+
+    if (editingItem.section === 'monthly-expense') {
+      setTitle(editingItem.item.title);
+      setAmount(formatAmount(editingItem.item.amount));
       return;
     }
 
@@ -258,6 +276,26 @@ export function PlannerItemEditorCard({
         title: title.trim(),
         amount: parsedAmount,
         investmentType,
+      });
+      return;
+    }
+
+    if (editingItem.section === 'monthly-expense') {
+      if (!title.trim()) {
+        onValidationError('Informe o nome do gasto.');
+        return;
+      }
+
+      if (!parsedAmount || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
+        onValidationError('Informe um valor valido para o gasto.');
+        return;
+      }
+
+      onSave({
+        section: 'monthly-expense',
+        id: editingItem.item.id,
+        title: title.trim(),
+        amount: parsedAmount,
       });
       return;
     }

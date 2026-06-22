@@ -7,6 +7,7 @@ import {
   incomeItemsTable,
   installmentItemsTable,
   investmentItemsTable,
+  monthlyExpenseItemsTable,
   personPaymentItemsTable,
   userProfileTable,
 } from '../../storage/sqlite/schema/finance-schema';
@@ -46,15 +47,23 @@ export type PlannerBackupExportResult = {
 };
 
 export async function exportPlannerBackup(): Promise<PlannerBackupExportResult> {
-  const [profile, incomeItems, fixedExpenseItems, installmentItems, investmentItems, personItems] =
-    await Promise.all([
-      db.select().from(userProfileTable).limit(1),
-      db.select().from(incomeItemsTable),
-      db.select().from(fixedExpenseItemsTable),
-      db.select().from(installmentItemsTable),
-      db.select().from(investmentItemsTable),
-      db.select().from(personPaymentItemsTable),
-    ]);
+  const [
+    profile,
+    incomeItems,
+    fixedExpenseItems,
+    installmentItems,
+    investmentItems,
+    monthlyExpenseItems,
+    personItems,
+  ] = await Promise.all([
+    db.select().from(userProfileTable).limit(1),
+    db.select().from(incomeItemsTable),
+    db.select().from(fixedExpenseItemsTable),
+    db.select().from(installmentItemsTable),
+    db.select().from(investmentItemsTable),
+    db.select().from(monthlyExpenseItemsTable),
+    db.select().from(personPaymentItemsTable),
+  ]);
 
   const backupData = {
     exportedAt: new Date().toISOString(),
@@ -64,6 +73,7 @@ export async function exportPlannerBackup(): Promise<PlannerBackupExportResult> 
       incomeItems,
       installmentItems,
       investmentItems,
+      monthlyExpenseItems,
       personPaymentItems: personItems,
     },
   };

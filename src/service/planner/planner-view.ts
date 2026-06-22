@@ -18,6 +18,7 @@ export const plannerTypeFilterOptions: {
   { key: 'all', label: 'Todos' },
   { key: 'income', label: 'Renda' },
   { key: 'fixed-expense', label: 'Fixas' },
+  { key: 'monthly-expense', label: 'Gastos' },
   { key: 'installment', label: 'Parcelas' },
   { key: 'person-payment', label: 'Pessoas' },
   { key: 'investment', label: 'Invest.' },

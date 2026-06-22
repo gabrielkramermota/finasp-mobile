@@ -15,30 +15,20 @@ export function BottomTabBar({ activeTab, onChangeTab }: BottomTabBarProps) {
     <View className="border-border-subtle bg-surface mx-4 mb-4 flex-row rounded-[20px] border px-2 py-2">
       {appTabs.map((tab) => {
         const isActive = tab.key === activeTab;
+        const iconColor = isActive ? '#5eead4' : '#8a98a8';
+        const Icon = tab.Icon;
 
         return (
           <Pressable
             key={tab.key}
             accessibilityRole="button"
-            className={cn('flex-1 rounded-[14px] px-3 py-3', isActive && 'bg-background')}
+            className={cn('flex-1 rounded-[14px] px-2 py-3', isActive && 'bg-background')}
             onPress={() => onChangeTab(tab.key)}>
-            <View className="items-center">
-              <View
-                className={cn(
-                  'mb-2 h-[3px] w-8 rounded-full',
-                  isActive ? 'bg-brand' : 'bg-surface-strong'
-                )}
-              />
+            <View className="min-h-[54px] items-center justify-center gap-1">
+              <Icon color={iconColor} size={22} strokeWidth={isActive ? 2.6 : 2.2} />
               <Text
                 className={cn(
-                  'text-[10px] font-bold tracking-[1.4px] uppercase',
-                  isActive ? 'text-brand-200' : 'text-content-subtle'
-                )}>
-                {tab.shortLabel}
-              </Text>
-              <Text
-                className={cn(
-                  'mt-1 text-sm font-semibold',
+                  'text-center text-[11px] font-bold',
                   isActive ? 'text-content-primary' : 'text-content-muted'
                 )}>
                 {tab.label}

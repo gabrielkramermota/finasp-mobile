@@ -1,28 +1,31 @@
+import { ClipboardList, LayoutDashboard, PlusCircle, Settings } from 'lucide-react-native';
+import type { LucideIcon } from 'lucide-react-native';
+
 export type AppTabKey = 'dashboard' | 'entries' | 'recurring' | 'settings';
 
 export const appTabs: {
+  Icon: LucideIcon;
   key: AppTabKey;
   label: string;
-  shortLabel: string;
 }[] = [
   {
+    Icon: LayoutDashboard,
     key: 'dashboard',
     label: 'Resumo',
-    shortLabel: 'MES',
   },
   {
+    Icon: PlusCircle,
     key: 'entries',
     label: 'Cadastro',
-    shortLabel: 'ADD',
   },
   {
+    Icon: ClipboardList,
     key: 'recurring',
     label: 'Itens',
-    shortLabel: 'LISTA',
   },
   {
+    Icon: Settings,
     key: 'settings',
     label: 'Config',
-    shortLabel: 'APP',
   },
 ];

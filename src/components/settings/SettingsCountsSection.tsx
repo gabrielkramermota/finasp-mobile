@@ -10,6 +10,7 @@ type SettingsCountsSectionProps = {
     fixedExpenseItems: number;
     installmentItems: number;
     investmentItems: number;
+    monthlyExpenseItems: number;
     personPaymentItems: number;
   };
 };
@@ -20,6 +21,7 @@ export function SettingsCountsSection({ counts }: SettingsCountsSectionProps) {
       <View className="flex-row flex-wrap gap-3 py-2">
         <SettingsCountCard label="Entradas" value={counts.incomeItems} />
         <SettingsCountCard label="Fixas" value={counts.fixedExpenseItems} />
+        <SettingsCountCard label="Gastos" value={counts.monthlyExpenseItems} />
         <SettingsCountCard label="Parcelas" value={counts.installmentItems} />
         <SettingsCountCard label="Pessoas" value={counts.personPaymentItems} />
         <SettingsCountCard label="Invest." value={counts.investmentItems} />

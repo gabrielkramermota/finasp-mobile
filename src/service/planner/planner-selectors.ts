@@ -5,6 +5,7 @@ import type {
   IncomeItem,
   InstallmentItem,
   InvestmentItem,
+  MonthlyExpenseItem,
   MonthlyPlannerData,
   MonthlyPlannerSummary,
   PersonPaymentItem,
@@ -16,28 +17,37 @@ type PlannerDataSet = {
   fixedExpenseItems: FixedExpenseItem[];
   installmentItems: InstallmentItem[];
   investmentItems: InvestmentItem[];
+  monthlyExpenseItems: MonthlyExpenseItem[];
   personPaymentItems: PersonPaymentItem[];
 };
+
+function isActiveFromMonth(itemMonth: MonthKey, selectedMonth: MonthKey) {
+  return compareMonthKeys(itemMonth, selectedMonth) <= 0;
+}
 
 function buildSummary({
   incomeItems,
   fixedExpenseItems,
   installmentItems,
   investmentItems,
+  monthlyExpenseItems,
   personPaymentItems,
 }: {
   incomeItems: IncomeItem[];
   fixedExpenseItems: FixedExpenseItem[];
   installmentItems: InstallmentItem[];
   investmentItems: InvestmentItem[];
+  monthlyExpenseItems: MonthlyExpenseItem[];
   personPaymentItems: PersonPaymentItem[];
 }): MonthlyPlannerSummary {
   const incomeTotal = incomeItems.reduce((total, item) => total + item.amount, 0);
   const fixedExpenseTotal = fixedExpenseItems.reduce((total, item) => total + item.amount, 0);
   const installmentTotal = installmentItems.reduce((total, item) => total + item.amount, 0);
   const investmentTotal = investmentItems.reduce((total, item) => total + item.amount, 0);
+  const monthlyExpenseTotal = monthlyExpenseItems.reduce((total, item) => total + item.amount, 0);
   const personPaymentTotal = personPaymentItems.reduce((total, item) => total + item.amount, 0);
-  const committedExpenseTotal = fixedExpenseTotal + installmentTotal + personPaymentTotal;
+  const committedExpenseTotal =
+    fixedExpenseTotal + installmentTotal + monthlyExpenseTotal + personPaymentTotal;
   const expenseTotal = committedExpenseTotal + investmentTotal;
   const remainingTotal = incomeTotal - expenseTotal;
 
@@ -48,6 +58,7 @@ function buildSummary({
       fixedExpenseTotal,
       installmentTotal,
       investmentTotal,
+      monthlyExpenseTotal,
       personPaymentTotal,
       expenseTotal,
       spentPercentage: 0,
@@ -62,6 +73,7 @@ function buildSummary({
     fixedExpenseTotal,
     installmentTotal,
     investmentTotal,
+    monthlyExpenseTotal,
     personPaymentTotal,
     expenseTotal,
     spentPercentage: (expenseTotal / incomeTotal) * 100,
@@ -75,15 +87,22 @@ export function createMonthlyPlannerData(
   selectedMonth: MonthKey
 ): MonthlyPlannerData {
   const monthData = {
-    incomeItems: data.incomeItems.filter((item) => item.competenceMonth === selectedMonth),
-    fixedExpenseItems: data.fixedExpenseItems.filter(
-      (item) => item.competenceMonth === selectedMonth
+    incomeItems: data.incomeItems.filter((item) =>
+      isActiveFromMonth(item.competenceMonth, selectedMonth)
+    ),
+    fixedExpenseItems: data.fixedExpenseItems.filter((item) =>
+      isActiveFromMonth(item.competenceMonth, selectedMonth)
     ),
     installmentItems: data.installmentItems.filter(
       (item) =>
-        compareMonthKeys(item.competenceMonth, selectedMonth) <= 0 && !isInstallmentCompleted(item)
+        isActiveFromMonth(item.competenceMonth, selectedMonth) && !isInstallmentCompleted(item)
     ),
-    investmentItems: data.investmentItems.filter((item) => item.competenceMonth === selectedMonth),
+    investmentItems: data.investmentItems.filter((item) =>
+      isActiveFromMonth(item.competenceMonth, selectedMonth)
+    ),
+    monthlyExpenseItems: data.monthlyExpenseItems.filter(
+      (item) => item.competenceMonth === selectedMonth
+    ),
     personPaymentItems: data.personPaymentItems.filter(
       (item) => item.competenceMonth === selectedMonth
     ),

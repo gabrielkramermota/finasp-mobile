@@ -101,6 +101,15 @@ const bootstrapStatements = `
     updated_at TEXT NOT NULL
   );
 
+  CREATE TABLE IF NOT EXISTS monthly_expense_items (
+    id TEXT PRIMARY KEY NOT NULL,
+    title TEXT NOT NULL,
+    amount REAL NOT NULL,
+    competence_month TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
+
   CREATE TABLE IF NOT EXISTS person_payment_items (
     id TEXT PRIMARY KEY NOT NULL,
     person_name TEXT NOT NULL,
@@ -126,6 +135,7 @@ const bootstrapStatements = `
   CREATE INDEX IF NOT EXISTS idx_fixed_expense_items_month ON fixed_expense_items(competence_month);
   CREATE INDEX IF NOT EXISTS idx_installment_items_month ON installment_items(competence_month);
   CREATE INDEX IF NOT EXISTS idx_investment_items_month ON investment_items(competence_month);
+  CREATE INDEX IF NOT EXISTS idx_monthly_expense_items_month ON monthly_expense_items(competence_month);
   CREATE INDEX IF NOT EXISTS idx_person_payment_items_month ON person_payment_items(competence_month);
 `;
 

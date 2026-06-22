@@ -108,6 +108,15 @@ export const investmentItemsTable = sqliteTable('investment_items', {
   updatedAt: text('updated_at').notNull(),
 });
 
+export const monthlyExpenseItemsTable = sqliteTable('monthly_expense_items', {
+  id: text('id').primaryKey(),
+  title: text('title').notNull(),
+  amount: real('amount').notNull(),
+  competenceMonth: text('competence_month').notNull(),
+  createdAt: text('created_at').notNull(),
+  updatedAt: text('updated_at').notNull(),
+});
+
 export const personPaymentItemsTable = sqliteTable('person_payment_items', {
   id: text('id').primaryKey(),
   personName: text('person_name').notNull(),
@@ -175,6 +184,7 @@ export const financeSchema = {
   fixedExpenseItemsTable,
   installmentItemsTable,
   investmentItemsTable,
+  monthlyExpenseItemsTable,
   personPaymentItemsTable,
   userProfileTable,
 };

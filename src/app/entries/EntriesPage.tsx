@@ -16,6 +16,7 @@ import {
   createIncomeItem,
   createInstallmentItem,
   createInvestmentItem,
+  createMonthlyExpenseItem,
   createPersonPaymentItem,
   useMonthlyPlannerData,
 } from '../../service/planner/planner-repository';
@@ -102,6 +103,8 @@ export function EntriesPage({ selectedMonth }: EntriesPageProps) {
   const [investmentTitle, setInvestmentTitle] = useState('');
   const [investmentAmount, setInvestmentAmount] = useState('');
   const [investmentType, setInvestmentType] = useState<InvestmentType>('reserve');
+  const [monthlyExpenseTitle, setMonthlyExpenseTitle] = useState('');
+  const [monthlyExpenseAmount, setMonthlyExpenseAmount] = useState('');
   const [personPaymentName, setPersonPaymentName] = useState('');
   const [personPaymentAmount, setPersonPaymentAmount] = useState('');
   const [personPaymentDueDay, setPersonPaymentDueDay] = useState('');
@@ -258,6 +261,37 @@ export function EntriesPage({ selectedMonth }: EntriesPageProps) {
     }
   }
 
+  async function handleMonthlyExpenseCreate() {
+    setIsSaving(true);
+
+    try {
+      await runCreateAction({
+        title: monthlyExpenseTitle,
+        amount: monthlyExpenseAmount,
+        emptyTitleMessage: 'Informe o nome do gasto.',
+        emptyAmountMessage: 'Informe um valor valido para o gasto.',
+        action: async (parsedAmount) =>
+          createMonthlyExpenseItem({
+            competenceMonth: selectedMonth,
+            title: monthlyExpenseTitle.trim(),
+            amount: parsedAmount,
+          }),
+        onSuccess: () => {
+          setMonthlyExpenseTitle('');
+          setMonthlyExpenseAmount('');
+          showToast({ message: 'Gasto cadastrado com sucesso.', playSound: true, tone: 'success' });
+        },
+      });
+    } catch (caughtError) {
+      showToast({
+        message: caughtError instanceof Error ? caughtError.message : 'Falha ao cadastrar gasto.',
+        tone: 'error',
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
   async function handlePersonPaymentCreate() {
     const parsedAmount = parseAmount(personPaymentAmount);
     const parsedDueDay = parseInteger(personPaymentDueDay);
@@ -344,6 +378,9 @@ export function EntriesPage({ selectedMonth }: EntriesPageProps) {
           </Text>
           <Text className="text-content-secondary mt-1 text-sm leading-6">
             Despesas e parcelas: {formatCurrencyBRL(data.summary.committedExpenseTotal)}
+          </Text>
+          <Text className="text-content-secondary mt-1 text-sm leading-6">
+            Gastos do mes: {formatCurrencyBRL(data.summary.monthlyExpenseTotal)}
           </Text>
           <Text className="text-content-secondary mt-1 text-sm leading-6">
             Investimentos: {formatCurrencyBRL(data.summary.investmentTotal)}
@@ -440,6 +477,32 @@ export function EntriesPage({ selectedMonth }: EntriesPageProps) {
                 disabled={isSaving}
                 onPress={handleFixedExpenseCreate}
                 title={isSaving ? 'Salvando...' : 'Adicionar despesa fixa'}
+              />
+            </View>
+          </PlannerSectionCard>
+        ) : null}
+
+        {matchesPlannerTypeFilter('monthly-expense', selectedType) ? (
+          <PlannerSectionCard title="Adicionar gasto do mes">
+            <View className="gap-4 py-2">
+              <TextField
+                label="Nome"
+                onChangeText={setMonthlyExpenseTitle}
+                placeholder="Hamburguer, sorvete, mercado"
+                value={monthlyExpenseTitle}
+              />
+              <TextField
+                keyboardType="numeric"
+                label="Valor"
+                onChangeText={setMonthlyExpenseAmount}
+                placeholder="20"
+                prefix="R$"
+                value={monthlyExpenseAmount}
+              />
+              <PrimaryButton
+                disabled={isSaving}
+                onPress={handleMonthlyExpenseCreate}
+                title={isSaving ? 'Salvando...' : 'Adicionar gasto'}
               />
             </View>
           </PlannerSectionCard>
