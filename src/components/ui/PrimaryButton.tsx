@@ -15,7 +15,7 @@ export function PrimaryButton({ title, onPress, disabled = false, className }: P
     <Pressable
       accessibilityRole="button"
       className={cn(
-        'bg-brand items-center justify-center rounded-[12px] px-5 py-4',
+        'bg-brand items-center justify-center rounded-xl px-5 py-4',
         disabled && 'bg-surface-strong opacity-60',
         className
       )}

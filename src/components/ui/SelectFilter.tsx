@@ -50,7 +50,7 @@ export function SelectFilter<Key extends string>({
         visible={isOpen}
         onRequestClose={() => setIsOpen(false)}>
         <Pressable className="flex-1 bg-black/40" onPress={() => setIsOpen(false)} />
-        <View className="bg-background max-h-[60%] rounded-t-[24px] px-6 py-6">
+        <View className="bg-background max-h-[60%] rounded-t-3xl px-6 py-6">
           <Text className="text-content-primary mb-4 text-xl font-black tracking-tight">
             Selecione o filtro
           </Text>
@@ -62,7 +62,7 @@ export function SelectFilter<Key extends string>({
                   key={option.key}
                   onPress={() => handleSelect(option.key)}
                   className={cn(
-                    'flex-row items-center rounded-[12px] border-2 px-4 py-3.5',
+                    'flex-row items-center rounded-xl border-2 px-4 py-3.5',
                     selectedKey === option.key
                       ? 'border-brand bg-brand/10'
                       : 'border-border-subtle bg-surface'
@@ -86,7 +86,7 @@ export function SelectFilter<Key extends string>({
 
           <Pressable
             onPress={() => setIsOpen(false)}
-            className="bg-brand items-center justify-center rounded-[12px] px-5 py-4">
+            className="bg-brand items-center justify-center rounded-xl px-5 py-4">
             <Text className="text-brand-contrast text-[13px] font-black tracking-[1.1px] uppercase">
               Fechar
             </Text>

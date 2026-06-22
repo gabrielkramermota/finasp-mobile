@@ -70,7 +70,7 @@ export function ModalBase({
               />
               <Pressable
                 className={cn(
-                  'items-center justify-center rounded-[12px] px-5 py-4',
+                  'items-center justify-center rounded-xl px-5 py-4',
                   isLoading && 'opacity-60'
                 )}
                 disabled={isLoading}

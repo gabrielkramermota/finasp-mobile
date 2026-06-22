@@ -254,7 +254,7 @@ export function RecurringEntriesPage({ selectedMonth }: RecurringEntriesPageProp
           <Text className="text-content-primary mt-3 text-[32px] font-black tracking-tight">
             Itens do mes
           </Text>
-          <Text className="text-content-secondary mt-3 max-w-[300px] text-base leading-7">
+          <Text className="text-content-secondary mt-3 max-w-75 text-base leading-7">
             Revise o que foi cadastrado, ordene os cards como preferir, marque pagamentos concluidos
             e remova o que entrou por engano.
           </Text>

@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 
 import type { MonthKey } from '../../domain/finance/finance-types';
-import {
-  getInstallmentProgressPercentage,
-  getInstallmentRemainingCount,
-} from '../../domain/planner/installment-progress';
+
 import { IncomeModal } from '../../components/entries-modals/IncomeModal';
 import { FixedExpenseModal } from '../../components/entries-modals/FixedExpenseModal';
 import { MonthlyExpenseModal } from '../../components/entries-modals/MonthlyExpenseModal';
@@ -29,7 +26,7 @@ import {
   plannerTypeFilterOptions,
   type PlannerTypeFilter,
 } from '../../service/planner/planner-view';
-import { formatCurrencyBRL, formatPercentage } from '../../utils/formatters';
+import { formatCurrencyBRL } from '../../utils/formatters';
 import type { IncomeSourceType, InvestmentType } from '../../domain/planner/planner-types';
 import type { PersonPaymentReminderStatus } from '../../service/notifications/payment-reminders';
 
@@ -382,7 +379,7 @@ export function EntriesPage({ selectedMonth }: EntriesPageProps) {
             <Text className="text-content-primary mt-3 text-[32px] font-black tracking-tight">
               Cadastro mensal
             </Text>
-            <Text className="text-content-secondary mt-3 max-w-[300px] text-base leading-7">
+            <Text className="text-content-secondary mt-3 max-w-75 text-base leading-7">
               Clique nos botões abaixo para cadastrar seus dados. O mês é definido na aba Resumo.
             </Text>
           </View>
